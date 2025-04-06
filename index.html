@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clothing Pattern Generator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+        .header {
+            background-color: #343a40;
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+        }
+        .step-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .step-number {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background-color: #007bff;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            margin-right: 1rem;
+            font-weight: bold;
+        }
+        .step-title {
+            display: inline-block;
+            font-size: 1.5rem;
+            font-weight: 600;
+            vertical-align: middle;
+        }
+        .preview-container {
+            border: 2px dashed #dee2e6;
+            border-radius: 8px;
+            padding: 1rem;
+            min-height: 200px;
+            margin-top: 1rem;
+            text-align: center;
+            position: relative;
+        }
+        .preview-image {
+            max-width: 100%;
+            max-height: 300px;
+        }
+        .measurement-form {
+            margin-top: 1.5rem;
+        }
+        .pattern-preview {
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+            text-align: center;
+        }
+        .export-option {
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        .export-option:hover {
+            border-color: #007bff;
+            box-shadow: 0 2px 10px rgba(0, 123, 255, 0.2);
+        }
+        .export-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        .btn-primary:hover {
+            background-color: #0069d9;
+            border-color: #0062cc;
+        }
+        .progress-container {
+            margin: 2rem 0;
+        }
+        .footer {
+            background-color: #343a40;
+            color: white;
+            padding: 2rem 0;
+            margin-top: 2rem;
+        }
+        .nav-pills .nav-link.active {
+            background-color: #007bff;
+        }
+        .nav-pills .nav-link {
+            color: #495057;
+        }
+        .tab-content {
+            padding-top: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <h1>Clothing Pattern Generator</h1>
+            <p class="lead">Transform photos of clothing into customized sewing patterns</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="progress-container">
+            <div class="progress" style="height: 5px;">
+                <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+            <div class="d-flex justify-content-between mt-2">
+                <span>Upload Photos</span>
+                <span>Input Measurements</span>
+                <span>Preview Pattern</span>
+                <span>Export</span>
+            </div>
+        </div>
+
+        <div class="step-container">
+            <div class="step-number">1</div>
+            <div class="step-title">Upload Photos</div>
+            <p class="mt-3">Upload clear photos of your garment from multiple angles. For best results, lay the garment flat on a contrasting background.</p>
+            
+            <ul class="nav nav-pills mb-3" id="photo-tabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="front-tab" data-bs-toggle="pill" data-bs-target="#front" type="button" role="tab" aria-controls="front" aria-selected="true">Front View</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="back-tab" data-bs-toggle="pill" data-bs-target="#back" type="button" role="tab" aria-controls="back" aria-selected="false">Back View</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="side-tab" data-bs-toggle="pill" data-bs-target="#side" type="button" role="tab" aria-controls="side" aria-selected="false">Side View</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="detail-tab" data-bs-toggle="pill" data-bs-target="#detail" type="button" role="tab" aria-controls="detail" aria-selected="false">Details</button>
+                </li>
+            </ul>
+            
+            <div class="tab-content" id="photo-tabsContent">
+                <div class="tab-pane fade show active" id="front" role="tabpanel" aria-labelledby="front-tab">
+                    <div class="preview-container">
+                        <p class="text-muted">Front view of the garment</p>
+                        <input type="file" id="front-upload" class="d-none">
+                        <button class="btn btn-outline-primary" onclick="document.getElementById('front-upload').click()">Upload Front View</button>
+                        <div id="front-preview" class="mt-3"></div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="back" role="tabpanel" aria-labelledby="back-tab">
+                    <div class="preview-container">
+                        <p class="text-muted">Back view of the garment</p>
+                        <input type="file" id="back-upload" class="d-none">
+                        <button class="btn btn-outline-primary" onclick="document.getElementById('back-upload').click()">Upload Back View</button>
+                        <div id="back-preview" class="mt-3"></div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="side" role="tabpanel" aria-labelledby="side-tab">
+                    <div class="preview-container">
+                        <p class="text-muted">Side view of the garment</p>
+                        <input type="file" id="side-upload" class="d-none">
+                        <button class="btn btn-outline-primary" onclick="document.getElementById('side-upload').click()">Upload Side View</button>
+                        <div id="side-preview" class="mt-3"></div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="detail" role="tabpanel" aria-labelledby="detail-tab">
+                    <div class="preview-container">
+                        <p class="text-muted">Detail shots (collars, sleeves, etc.)</p>
+                        <input type="file" id="detail-upload" class="d-none" multiple>
+                        <button class="btn btn-outline-primary" onclick="document.getElementById('detail-upload').click()">Upload Detail Photos</button>
+                        <div id="detail-preview" class="mt-3"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="d-flex justify-content-between mt-4">
+                <button class="btn btn-secondary" disabled>Back</button>
+                <button class="btn btn-primary" onclick="nextStep(1)">Next: Input Measurements</button>
+            </div>
+        </div>
+
+        <div class="step-container" style="display: none;">
+            <div class="step-number">2</div>
+            <div class="step-title">Input Measurements</div>
+            <p class="mt-3">Enter your measurements to customize the pattern to your size. All measurements should be in centimeters.</p>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="measurement-form">
+                        <h5>Body Measurements</h5>
+                        <div class="mb-3">
+                            <label for="bust" class="form-label">Bust/Chest</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="bust" placeholder="Enter measurement">
+                                <span class="input-group-text">cm</span>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="waist" class="form-label">Waist</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="waist" placeholder="Enter measurement">
+                                <span class="input-group-text">cm</span>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="hip" class="form-label">Hip</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="hip" placeholder="Enter measurement">
+                                <span class="input-group-text">cm</span>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="shoulder" class="form-label">Shoulder Width</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="shoulder" placeholder="Enter measurement">
+                                <span class="input-group-text">cm</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="measurement-form">
+                        <h5>Garment Measurements</h5>
+                        <div class="mb-3">
+                            <label for="length" class="form-label">Length</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="length" placeholder="Enter measurement">
+                                <span class="input-group-text">cm</span>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="sleeve" class="form-label">Sleeve Length</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="sleeve" placeholder="Enter measurement">
+                                <span class="input-group-text">cm</span>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="inseam" class="form-label">Inseam (for pants)</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="inseam" placeholder="Enter measurement">
+                                <span class="input-group-text">cm</span>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="seam-allowance" class="form-label">Seam Allowance</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="seam-allowance" value="1.0" placeholder="Enter measurement">
+                                <span class="input-group-text">cm</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-4">
+                <h5>Standard Sizes</h5>
+                <p>Alternatively, select a standard size:</p>
+                <div class="btn-group" role="group" aria-label="Standard sizes">
+                    <input type="radio" class="btn-check" name="size" id="size-xs" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="size-xs">XS</label>
+                    
+                    <input type="radio" class="btn-check" name="size" id="size-s" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="size-s">S</label>
+                    
+                    <input type="radio" class="btn-check" name="size" id="size-m" autocomplete="off" checked>
+                    <label class="btn btn-outline-primary" for="size-m">M</label>
+                    
+                    <input type="radio" class="btn-check" name="size" id="size-l" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="size-l">L</label>
+                    
+                    <input type="radio" class="btn-check" name="size" id="size-xl" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="size-xl">XL</label>
+                </div>
+            </div>
+            
+            <div class="d-flex justify-content-between mt-4">
+                <button class="btn btn-secondary" onclick="prevStep(2)">Back</button>
+                <button class="btn btn-primary" onclick="nextStep(2)">Next: Preview Pattern</button>
+            </div>
+        </div>
+
+        <div class="step-container" style="display: none;">
+            <div class="step-number">3</div>
+            <div class="step-title">Preview Pattern</div>
+            <p class="mt-3">Review your generated pattern and make any necessary adjustments.</p>
+            
+            <ul class="nav nav-pills mb-3" id="preview-tabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="3d-tab" data-bs-toggle="pill" data-bs-target="#3d" type="button" role="tab" aria-controls="3d" aria-selected="true">3D Model</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="pattern-tab" data-bs-toggle="pill" data-bs-target="#pattern" type="button" role="tab" aria-controls="pattern" aria-selected="false">Pattern Pieces</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="layout-tab" data-bs-toggle="pill" data-bs-target="#layout" type="button" role="tab" aria-controls="layout" aria-selected="false">Layout</button>
+                </li>
+            </ul>
+            
+            <div class="tab-content" id="preview-tabsContent">
+                <div class="tab-pane fade show active" id="3d" role="tabpanel" aria-labelledby="3d-tab">
+                    <div class="pattern-preview">
+                        <p class="text-muted">3D model preview</p>
+                        <div id="3d-model-container" style="height: 400px; background-color: #f8f9fa;">
+                            <!-- 3D model will be rendered here -->
+                            <div class="d-flex justify-content-center align-items-center h-100">
+                                <p class="text-muted">3D model will be displayed here</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pan
+(Content truncated due to size limit. Use line ranges to read in chunks)
